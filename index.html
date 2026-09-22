@@ -1542,12 +1542,13 @@ function daysSince(isoDate) {
     console.warn('localStorage ใช้งานไม่ได้ในบริบทนี้ ข้อมูลจะไม่ถูกบันทึกถาวร (ใช้งานปกติเมื่อเปิดผ่าน Safari จริง)');
   }
 
-  // ถ้ายังไม่เคยตั้งวันเริ่ม ให้ตั้งอัตโนมัติเป็นวันจันทร์ที่ใกล้ที่สุด (ผู้ใช้แก้ทีหลังได้ที่ตั้งค่า)
+  // ถ้ายังไม่เคยตั้งวันเริ่ม ให้ตั้งอัตโนมัติเป็นวันจันทร์ล่าสุดที่ผ่านมา (ไม่ใช่วันจันทร์ในอนาคต)
+  // ผู้ใช้แก้ทีหลังได้ที่ตั้งค่า
   if (!state.settings.startDate) {
     const d = new Date();
-    const day = d.getDay(); // 0=Sun
-    const diffToMon = day === 0 ? 1 : (day === 1 ? 0 : 8 - day);
-    d.setDate(d.getDate() + diffToMon);
+    const day = d.getDay(); // 0=Sun..6=Sat
+    const mondayOffset = (day + 6) % 7; // จำนวนวันย้อนหลังไปถึงวันจันทร์ล่าสุด (0 ถ้าวันนี้คือจันทร์)
+    d.setDate(d.getDate() - mondayOffset);
     state.settings.startDate = toDateKey(d);
     save();
   }
