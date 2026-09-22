@@ -102,14 +102,16 @@ ul.clean li::before{content:"";position:absolute;left:3px;top:12px;width:6px;hei
 .exrec{font-size:12px;color:var(--rest);background:#EEF3FB;border-radius:8px;padding:6px 9px;margin:6px 0 10px}
 .setgrid{display:flex;flex-direction:column;gap:6px}
 .setrow{display:flex;align-items:center;gap:6px}
-.setrow .sn{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);width:20px;flex:0 0 20px}
-.setrow input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:10px;padding:9px 8px;
+.setrow .sn{font-family:'IBM Plex Mono';font-size:10.5px;color:var(--muted);width:38px;flex:0 0 38px}
+.setrow .setfield{flex:1;min-width:0;display:flex;flex-direction:column;align-items:stretch;gap:2px}
+.setrow .setfield .fieldtag{font-size:9px;color:var(--muted);text-align:center;text-transform:uppercase;letter-spacing:.3px}
+.setrow input{width:100%;min-width:0;border:1.5px solid var(--line);border-radius:10px;padding:8px 6px;
   font-family:'IBM Plex Mono';font-size:14px;font-weight:600;text-align:center;background:#FAFBFC}
 .setrow input:focus{outline:none;border-color:var(--heat);background:#fff}
-.setrow .unit{font-size:10.5px;color:var(--muted);flex:0 0 34px}
 .setrow .okbtn{width:36px;height:36px;flex:0 0 36px;border-radius:10px;border:none;background:var(--line);
   color:var(--muted);font-size:16px;display:flex;align-items:center;justify-content:center}
 .setrow.filled .okbtn{background:var(--grow);color:#fff}
+.setrow .unit{font-size:10.5px;color:var(--muted);flex:0 0 34px}
 
 .runcard{background:linear-gradient(150deg,#101722,#0C1017);color:#fff;border:none}
 .runcard .metricrow{border-bottom-color:rgba(255,255,255,.1)}
@@ -786,6 +788,65 @@ function daysSince(isoDate) {
   return (now - then) / (1000 * 60 * 60 * 24);
 }
 
+// ===== จาก weekview.mjs =====
+// ============================================================
+// WeekView — หาวันที่ทั้ง 7 วันของสัปดาห์ปฏิทินที่มี "วันนี้" อยู่ (จ.–อา.)
+// ใช้แสดงเช็คลิสต์สัปดาห์นี้ และดึงประวัติของแต่ละวัน
+// ============================================================
+
+function parseDateKey(key) {
+  const [y, m, d] = key.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+// คืน array 7 ค่า [จันทร์...อาทิตย์] เป็น date-key ของสัปดาห์ปฏิทินที่มี todayKey อยู่
+function getCalendarWeekDates(todayKey) {
+  const d = parseDateKey(todayKey);
+  const dow = d.getDay(); // 0=Sun..6=Sat
+  const mondayOffset = (dow + 6) % 7; // จำนวนวันย้อนไปถึงจันทร์
+  const monday = new Date(d);
+  monday.setDate(monday.getDate() - mondayOffset);
+  const out = [];
+  for (let i = 0; i < 7; i++) {
+    const dd = new Date(monday);
+    dd.setDate(dd.getDate() + i);
+    out.push(toDateKey(dd));
+  }
+  return out;
+}
+
+// สรุปสถานะของแต่ละวันในสัปดาห์ สำหรับแสดงเช็คลิสต์
+// status: 'done' | 'missed' | 'today' | 'upcoming' | 'rest'
+function summarizeWeek(sessions, weekDates, todayKey, dayTypeByIndex) {
+  return weekDates.map((dateKey, i) => {
+    const dayType = dayTypeByIndex[i]; // 'lift' | 'run_abs' | 'rest'
+    const session = sessions[dateKey];
+    const completed = !!(session && session.completed);
+    let status;
+    if (dayType === 'rest') status = 'rest';
+    else if (completed) status = 'done';
+    else if (dateKey === todayKey) status = 'today';
+    else if (dateKey < todayKey) status = 'missed';
+    else status = 'upcoming';
+    return { dateKey, dayType, completed, status };
+  });
+}
+
+// สร้างข้อความสรุปสิ่งที่ทำในเซสชันนั้น (สำหรับประวัติ) เช่น "Goblet Squat 3 เซ็ต, RDL 3 เซ็ต, วิ่ง 40 นาที"
+function summarizeSession(session, dayDef) {
+  if (!session) return null;
+  const parts = [];
+  if (session.run) parts.push(`วิ่ง ${session.run.minutes} นาที${session.run.avgHr ? ` (${session.run.avgHr} bpm)` : ''}`);
+  for (const ex of dayDef.exercises) {
+    const sets = session.sets[ex.id];
+    if (sets && sets.filter(Boolean).length > 0) {
+      const filled = sets.filter(Boolean).length;
+      parts.push(`${ex.name} ${filled}/${ex.sets} เซ็ต`);
+    }
+  }
+  return parts;
+}
+
 </script>
 <script>
 // ============================================================
@@ -891,6 +952,34 @@ function daysSince(isoDate) {
   }
 
   // ---------- แท็บ "วันนี้" ----------
+  const SHORT_LABEL = { mon: 'จ', tue: 'อ', wed: 'พ', thu: 'พฤ', fri: 'ศ', sat: 'ส', sun: 'อา' };
+
+  function renderWeekChecklist() {
+    const today = todayKey();
+    const weekDates = getCalendarWeekDates(today);
+    const dayTypes = DAY_ORDER.map(k => PROGRAM.days[k].type);
+    const summary = summarizeWeek(state.sessions, weekDates, today, dayTypes);
+
+    const icon = { done: '✅', missed: '⚠️', today: '🔵', upcoming: '⚪', rest: '🛌' };
+    let pills = '';
+    summary.forEach((s, i) => {
+      const dk = DAY_ORDER[i];
+      pills += `
+        <div style="text-align:center;flex:1">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px">${SHORT_LABEL[dk]}</div>
+          <div style="font-size:18px">${icon[s.status]}</div>
+        </div>`;
+    });
+    const doneCount = summary.filter(s => s.status === 'done').length;
+    const totalCount = summary.filter(s => s.status !== 'rest').length;
+
+    return `
+      <div class="card">
+        <h3>เช็คลิสต์สัปดาห์นี้ · ${doneCount}/${totalCount} วัน</h3>
+        <div style="display:flex;margin-top:8px">${pills}</div>
+      </div>`;
+  }
+
   function renderToday() {
     const el = document.getElementById('v-today');
     if (!state.settings.startDate) {
@@ -920,7 +1009,7 @@ function daysSince(isoDate) {
     }
 
     if (plan.dayKey === 'sun') {
-      el.innerHTML = `
+      el.innerHTML = renderWeekChecklist() + `
         <div class="card restday">
           <div class="big">🛌</div>
           <h3>วันพัก + ยืดเหยียด</h3>
@@ -929,7 +1018,7 @@ function daysSince(isoDate) {
       return;
     }
 
-    let html = `<h2 class="head">${plan.day.title}</h2>`;
+    let html = renderWeekChecklist() + `<h2 class="head">${plan.day.title}</h2>`;
     if (plan.light) html += `<div class="note">🪶 สัปดาห์เบา: เซ็ตลดลงครึ่งหนึ่งอัตโนมัติ ใช้น้ำหนักเดิม ไม่ต้องเพิ่ม</div>`;
 
     // การ์ดวิ่ง (เฉพาะวัน run_abs)
@@ -966,10 +1055,15 @@ function daysSince(isoDate) {
         const filled = !!v;
         setsHtml += `
           <div class="setrow ${filled ? 'filled' : ''}">
-            <span class="sn">${i + 1}</span>
-            <input type="number" inputmode="decimal" placeholder="กก." value="${v && v.kg != null ? v.kg : ''}" id="kg-${ex.id}-${i}">
-            <input type="number" inputmode="decimal" placeholder="${ex.repsMin}-${ex.repsMax}" value="${v ? v.reps : ''}" id="reps-${ex.id}-${i}">
-            <span class="unit">${unitLabel}${sideLabel}</span>
+            <span class="sn">เซ็ต ${i + 1}</span>
+            <div class="setfield">
+              <input type="number" inputmode="decimal" placeholder="0" value="${v && v.kg != null ? v.kg : ''}" id="kg-${ex.id}-${i}">
+              <span class="fieldtag">กก.</span>
+            </div>
+            <div class="setfield">
+              <input type="number" inputmode="decimal" placeholder="${ex.repsMin}-${ex.repsMax}" value="${v ? v.reps : ''}" id="reps-${ex.id}-${i}">
+              <span class="fieldtag">${unitLabel}${sideLabel}</span>
+            </div>
             <button class="okbtn ${filled ? 'filled' : ''}" data-act="record-set" data-ex="${ex.id}" data-idx="${i}" data-day="${plan.dayKey}" data-restsec="${plan.day.restSeconds}">✓</button>
           </div>`;
       }
@@ -1060,7 +1154,38 @@ function daysSince(isoDate) {
         <div class="metricrow"><span class="lab">สัปดาห์ 9 (เบา)</span><span class="val">ลดเซ็ตครึ่งหนึ่ง</span></div>
         <div class="metricrow"><span class="lab">สัปดาห์ 10–12</span><span class="val">ลงช้า 3 วินาที</span></div>
         <p style="margin-top:10px"><b>กฎเพิ่มน้ำหนัก:</b> ทำครบจำนวนครั้งสูงสุดทุกเซ็ต 2 ครั้งติดกัน → เพิ่มน้ำหนัก · ทำไม่ถึงขั้นต่ำ 2 ครั้งติดกัน → ลดน้ำหนัก · เป้าคือเหลือแรงอีก 1–3 ครั้งตอนจบเซ็ต</p>
-      </div>`;
+      </div>
+
+      <h2 class="head">ประวัติการออกกำลังกาย</h2>
+      ${renderWorkoutHistory()}`;
+  }
+
+  function renderWorkoutHistory() {
+    const dateKeys = Object.keys(state.sessions).sort().reverse().slice(0, 30); // ล่าสุด 30 วัน
+    if (dateKeys.length === 0) {
+      return `<div class="card"><p style="text-align:center;color:var(--muted);margin:6px 0">ยังไม่มีประวัติการออกกำลังกาย เริ่มบันทึกที่แท็บ "วันนี้" ได้เลย</p></div>`;
+    }
+    const typeText = { lift: 'เวท', run_abs: 'วิ่ง+ท้อง', rest: 'พัก' };
+    let html = '<div class="card" style="padding:6px 16px">';
+    for (const dk of dateKeys) {
+      const session = state.sessions[dk];
+      const dayDef = PROGRAM.days[session.day];
+      if (!dayDef) continue;
+      const parts = summarizeSession(session, dayDef) || [];
+      const statusIcon = session.completed ? '✅' : (parts.length > 0 ? '🟡' : '⚪');
+      html += `
+        <details class="acc" style="box-shadow:none;border:none;border-bottom:1px solid var(--line);border-radius:0;margin-bottom:0">
+          <summary style="padding:12px 0">
+            <span>${statusIcon} ${dk} · ${dayDef.label} (${typeText[dayDef.type]})</span>
+            <span class="chev">▾</span>
+          </summary>
+          <div class="inner" style="padding-bottom:12px">
+            ${parts.length > 0 ? `<ul class="clean">${parts.map(p => `<li>${p}</li>`).join('')}</ul>` : '<p style="color:var(--muted);font-size:12.5px">ยังไม่ได้บันทึกอะไรในวันนี้</p>'}
+          </div>
+        </details>`;
+    }
+    html += '</div>';
+    return html;
   }
 
   // ---------- แท็บ "ติดตาม" ----------
@@ -1420,6 +1545,7 @@ function daysSince(isoDate) {
     startRestTimer(Number(restSec));
     renderToday();
     renderTopbar();
+    renderProgram();
   }
 
   function handleSaveRun() {
@@ -1430,6 +1556,7 @@ function daysSince(isoDate) {
     if (!res.ok) { alert('กรุณากรอกจำนวนนาทีให้ถูกต้อง'); return; }
     save();
     renderToday();
+    renderProgram();
   }
 
   // ---------- สำรอง/นำเข้าข้อมูล ----------
