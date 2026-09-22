@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fitness 43">
+<meta name="theme-color" content="#0E1116">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230E1116'/%3E%3Ctext x='90' y='120' font-family='Arial Black,sans-serif' font-size='78' font-weight='900' fill='%23FF5A1F' text-anchor='middle'%3E12wk%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<title>โปรแกรม 12 สัปดาห์</title>
+<style>
+:root{
+  --ink:#12151C; --ink-soft:#3A4150; --muted:#7A8494; --line:#E4E8EE;
+  --paper:#EDF0F4; --card:#FFFFFF;
+  --heat:#FF5A1F; --heat-dk:#D4430F;
+  --grow:#0FA968; --grow-dk:#0B8552;
+  --rest:#5B7DB1; --gold:#F5B429;
+  --shadow:0 1px 2px rgba(18,21,28,.06),0 8px 24px -12px rgba(18,21,28,.18);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:'IBM Plex Sans Thai',system-ui,sans-serif;background:var(--paper);color:var(--ink);
+  line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:calc(78px + env(safe-area-inset-bottom));}
+.wrap{max-width:520px;margin:0 auto;padding:0 16px}
+
+/* ---------- banner ---------- */
+.banner{background:#FFF0E6;border-bottom:1px solid #FCC79B;color:#8A5216;font-size:12.5px;
+  padding:9px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding-top:calc(9px + env(safe-area-inset-top))}
+.banner button{background:var(--heat);color:#fff;border:none;border-radius:8px;padding:6px 12px;
+  font-size:12px;font-weight:600;white-space:nowrap}
+
+/* ---------- topbar ---------- */
+.topbar{background:linear-gradient(160deg,#181C25,#0E1116);color:#fff;
+  padding:calc(env(safe-area-inset-top) + 14px) 0 14px}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between}
+#wkLabel{font-family:'Anton';font-size:17px;letter-spacing:.3px}
+.phasepill{display:inline-block;margin-left:8px;font-family:'IBM Plex Mono';font-size:10px;
+  letter-spacing:1px;text-transform:uppercase;background:rgba(255,90,31,.18);color:#FF8552;
+  padding:3px 8px;border-radius:20px;vertical-align:middle}
+.ring-mini svg{width:34px;height:34px}
+
+/* ---------- sections ---------- */
+.view{display:none;padding-top:16px}
+.view.active{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2.head{font-family:'Anton';font-weight:400;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--heat-dk);margin:22px 0 12px;display:flex;align-items:center;gap:10px}
+h2.head::before{content:"";width:22px;height:3px;background:var(--heat);border-radius:2px}
+h2.head:first-child{margin-top:4px}
+
+.card{background:var(--card);border-radius:18px;padding:16px;box-shadow:var(--shadow);
+  margin-bottom:12px;border:1px solid var(--line)}
+.card h3{margin:0 0 6px;font-size:15.5px;font-weight:700;color:var(--ink)}
+.card p{margin:0 0 8px;font-size:13.5px;color:var(--ink-soft)}
+.card p:last-child{margin-bottom:0}
+
+.metricrow{display:flex;align-items:baseline;justify-content:space-between;padding:10px 0;
+  border-bottom:1px solid var(--line);gap:10px}
+.metricrow:last-child{border-bottom:none}
+.metricrow .lab{font-size:13px;color:var(--ink-soft)}
+.metricrow .val{font-family:'IBM Plex Mono';font-weight:600;font-size:14.5px;color:var(--ink);text-align:right}
+.tag{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:20px;margin-left:5px}
+.tag.ok{background:#E3F6EC;color:var(--grow-dk)}
+.tag.warn{background:#FFF0E6;color:var(--heat-dk)}
+
+.note{background:#FFF7ED;border:1px solid #FCE3C4;border-radius:14px;padding:12px 14px;
+  font-size:12.5px;color:#8A5216;margin:10px 0}
+.note.good{background:#EAF8F1;border-color:#C6EAD6;color:#0B6b45}
+.note.info{background:#E9EFF8;border-color:#C9D6EE;color:#2E4A78}
+
+ul.clean{margin:4px 0 0;padding-left:0;list-style:none}
+ul.clean li{position:relative;padding:5px 0 5px 22px;font-size:13.5px;color:var(--ink-soft)}
+ul.clean li::before{content:"";position:absolute;left:3px;top:12px;width:6px;height:6px;border-radius:50%;background:var(--heat)}
+
+.btn{border:none;border-radius:13px;padding:12px;font-family:'IBM Plex Sans Thai';font-weight:600;
+  font-size:13.5px;cursor:pointer;transition:.15s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--grow);color:#fff}
+.btn.accent{background:var(--heat);color:#fff}
+.btn.ghost{background:var(--card);color:var(--ink-soft);border:1px solid var(--line)}
+.btn.block{width:100%}
+.btnrow{display:flex;gap:8px;margin-top:4px}
+
+/* ---------- exercise card (แท็บวันนี้) ---------- */
+.excard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;
+  margin-bottom:10px;box-shadow:var(--shadow)}
+.excard.done{background:#F4FBF7;border-color:#CDEBDC}
+.exhd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px}
+.exhd .nm{font-weight:700;font-size:15px;color:var(--ink)}
+.exhd .meta{font-size:11.5px;color:var(--muted);margin-top:2px;font-family:'IBM Plex Mono'}
+.vidbtn{width:32px;height:32px;flex:0 0 32px;border-radius:10px;background:var(--heat);
+  display:flex;align-items:center;justify-content:center;text-decoration:none}
+.vidbtn svg{width:13px;height:13px;fill:#fff;margin-left:2px}
+.exnote{font-size:11.5px;color:var(--heat-dk);background:#FFF3EC;border-radius:8px;padding:5px 9px;
+  margin:6px 0;display:inline-block}
+.exrec{font-size:12px;color:var(--rest);background:#EEF3FB;border-radius:8px;padding:6px 9px;margin:6px 0 10px}
+.setgrid{display:flex;flex-direction:column;gap:6px}
+.setrow{display:flex;align-items:center;gap:6px}
+.setrow .sn{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);width:20px;flex:0 0 20px}
+.setrow input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:10px;padding:9px 8px;
+  font-family:'IBM Plex Mono';font-size:14px;font-weight:600;text-align:center;background:#FAFBFC}
+.setrow input:focus{outline:none;border-color:var(--heat);background:#fff}
+.setrow .unit{font-size:10.5px;color:var(--muted);flex:0 0 34px}
+.setrow .okbtn{width:36px;height:36px;flex:0 0 36px;border-radius:10px;border:none;background:var(--line);
+  color:var(--muted);font-size:16px;display:flex;align-items:center;justify-content:center}
+.setrow.filled .okbtn{background:var(--grow);color:#fff}
+
+.runcard{background:linear-gradient(150deg,#101722,#0C1017);color:#fff;border:none}
+.runcard .metricrow{border-bottom-color:rgba(255,255,255,.1)}
+.runcard .lab{color:#B9C0CC}
+.runcard .val{color:#fff}
+.runcard input{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:#fff}
+
+.restday{text-align:center;padding:40px 20px}
+.restday .big{font-size:40px}
+.finishcard{text-align:center;padding:30px 20px;background:linear-gradient(150deg,#101722,#0C1017);color:#fff;border:none}
+
+/* ---------- program tab ---------- */
+.daypill{display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono';font-size:11px;
+  font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:5px 11px;border-radius:20px}
+.daypill.lift{background:#E9F7F0;color:var(--grow-dk)}
+.daypill.run{background:#FFECE3;color:var(--heat-dk)}
+.daypill.rest{background:#E9EFF8;color:var(--rest)}
+.dayline{display:flex;gap:12px;padding:11px 4px;border-bottom:1px solid var(--line)}
+.dayline:last-child{border-bottom:none}
+.dayline .dname{font-family:'Anton';font-size:12px;color:var(--muted);width:38px;flex:0 0 38px;padding-top:2px}
+.dayline .dcont .t{font-weight:700;font-size:13.5px;color:var(--ink)}
+.dayline .dcont .d{font-size:11.5px;color:var(--muted);margin-top:2px}
+
+.exlink{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;padding:10px 0;
+  border-bottom:1px solid var(--line)}
+.exlink:last-child{border-bottom:none}
+.exlink .body{flex:1;min-width:0}
+.exlink .body .nm{font-weight:600;font-size:13.5px;color:var(--ink);display:block}
+.exlink .body .mt{font-size:11px;color:var(--muted);margin-top:1px}
+.exlink .reps{font-family:'IBM Plex Mono';font-size:11px;font-weight:600;color:var(--grow-dk);
+  background:#E9F7F0;padding:3px 7px;border-radius:8px;white-space:nowrap;flex:0 0 auto}
+
+details.acc{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:10px;
+  overflow:hidden;box-shadow:var(--shadow)}
+details.acc>summary{list-style:none;cursor:pointer;padding:14px 15px;font-weight:700;font-size:14px;
+  display:flex;justify-content:space-between;align-items:center}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary .chev{transition:.2s;color:var(--muted);font-size:12px}
+details.acc[open]>summary .chev{transform:rotate(180deg)}
+details.acc .inner{padding:0 15px 13px}
+
+/* ---------- track tab ---------- */
+.finput{margin-bottom:12px}
+.finput label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
+.finput input,.finput select{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;
+  font-family:'IBM Plex Mono';font-size:14.5px;font-weight:600;color:var(--ink);background:#FAFBFC}
+.finput input:focus,.finput select:focus{outline:none;border-color:var(--heat);background:#fff}
+
+.histitem{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;
+  margin-bottom:9px;box-shadow:var(--shadow)}
+.histitem .hh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.histitem .hdate{font-family:'IBM Plex Mono';font-size:11px;font-weight:600;color:var(--ink-soft)}
+.histitem .hdel{background:none;border:none;color:var(--muted);font-size:11.5px;padding:3px 6px}
+.histitem .hgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.histitem .hcell{text-align:center}
+.histitem .hcell .hv{font-family:'IBM Plex Mono';font-weight:700;font-size:13px;color:var(--ink)}
+.histitem .hcell .hl{font-size:9px;color:var(--muted);text-transform:uppercase}
+
+/* ---------- settings ---------- */
+.togrow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.togrow:last-child{border-bottom:none}
+.togrow .lab{font-size:13.5px;color:var(--ink)}
+.togrow input[type=date],.togrow input[type=number],.togrow select{border:1.5px solid var(--line);
+  border-radius:10px;padding:7px 9px;font-family:'IBM Plex Mono';font-size:13px;width:130px;text-align:right}
+.dangerbtn{background:#FDECEC;color:#B23A3A;border:1px solid #F7C8C8}
+
+/* ---------- timer bar ---------- */
+.timerbar{position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom));z-index:60;
+  max-width:520px;margin:0 auto;background:#12151C;color:#fff;border-radius:16px;
+  padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 10px 30px -8px rgba(0,0,0,.4);
+  left:16px;right:16px}
+.timerbar .tlabel{font-size:11px;color:#9AA3B2;text-transform:uppercase;letter-spacing:1px}
+#timerText{font-family:'Anton';font-size:20px;flex:1}
+.timerbar button{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:9px;
+  padding:7px 11px;font-size:12px;font-weight:600}
+
+/* ---------- tabbar ---------- */
+nav.tabs{position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(255,255,255,.94);
+  backdrop-filter:blur(14px);border-top:1px solid var(--line);
+  padding:7px 6px calc(7px + env(safe-area-inset-bottom));display:flex;max-width:520px;margin:0 auto}
+nav.tabs button{flex:1;background:none;border:none;padding:5px 2px;cursor:pointer;display:flex;
+  flex-direction:column;align-items:center;gap:2px;color:var(--muted);font-family:'IBM Plex Sans Thai';
+  font-size:10px;font-weight:600}
+nav.tabs button svg{width:20px;height:20px;stroke:var(--muted);fill:none;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+nav.tabs button.on{color:var(--heat-dk)}
+nav.tabs button.on svg{stroke:var(--heat)}
+
+.foot{text-align:center;font-size:10.5px;color:var(--muted);padding:20px 16px 8px;line-height:1.6}
+
+</style>
+</head>
+<body>
+<div id="backupBanner" class="banner" style="display:none">
+  <span id="backupBannerText"></span>
+  <button id="backupBannerBtn">สำรองเลย</button>
+</div>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="wkline">
+      <span id="wkLabel">–</span>
+      <span id="wkPhase" class="phasepill"></span>
+    </div>
+    <div class="ring-mini">
+      <svg viewBox="0 0 36 36">
+        <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="4"/>
+        <circle id="ringFg" cx="18" cy="18" r="15.5" fill="none" stroke="#FF5A1F" stroke-width="4"
+          stroke-linecap="round" stroke-dasharray="97.4" stroke-dashoffset="97.4"
+          transform="rotate(-90 18 18)" style="transition:stroke-dashoffset .3s ease"/>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="view active" id="v-today"></section>
+  <section class="view" id="v-program"></section>
+  <section class="view" id="v-track"></section>
+  <section class="view" id="v-know"></section>
+  <section class="view" id="v-settings"></section>
+</div>
+
+<div id="timerBar" class="timerbar" style="display:none">
+  <span class="tlabel">พัก</span>
+  <span id="timerText">0:00</span>
+  <button id="timerPlus15">+15s</button>
+  <button id="timerSkip">ข้าม</button>
+</div>
+
+<nav class="tabs">
+  <button class="on" data-v="v-today" onclick="go(this)">
+    <svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>วันนี้</button>
+  <button data-v="v-program" onclick="go(this)">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>โปรแกรม</button>
+  <button data-v="v-track" onclick="go(this)">
+    <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>ติดตาม</button>
+  <button data-v="v-know" onclick="go(this)">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M11 12h1v5h1"/></svg>ความรู้</button>
+  <button data-v="v-settings" onclick="go(this)">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>ตั้งค่า</button>
+</nav>
+
+<input type="file" id="importFileInput" accept="application/json" style="display:none">
+
+<script>
+// ===== จาก program.mjs =====
+// ============================================================
+// PROGRAM — ข้อมูลตารางออกกำลังกาย 12 สัปดาห์ (ฉบับล็อก)
+// ไม่มีข้อมูลส่วนตัวของผู้ใช้อยู่ในไฟล์นี้
+// ============================================================
+
+const yt = (q) => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
+
+const PROGRAM = {
+  totalWeeks: 12,
+  lightWeeks: [5, 9], // สัปดาห์เบา ลดเซ็ตครึ่งหนึ่ง
+  days: {
+    mon: {
+      key: 'mon', label: 'จันทร์', type: 'lift', title: 'Day A · อก + ไหล่ + ต้นขาหน้า',
+      restSeconds: 75,
+      exercises: [
+        { id: 'goblet_squat', name: 'Goblet Squat', sets: 3, repsMin: 10, repsMax: 12, unit: 'reps', perSide: false, startWeight: '10–12 กก. (ถือข้างเดียว)', note: '', video: yt('dumbbell goblet squat how to') },
+        { id: 'floor_press', name: 'Dumbbell Floor Press', sets: 3, repsMin: 8, repsMax: 12, unit: 'reps', perSide: false, startWeight: '8–12 กก./ข้าง', note: 'นอนพื้น ไม่ต้องมีม้านั่ง', video: yt('dumbbell floor press no bench') },
+        { id: 'pushup', name: 'Push-up', sets: 3, repsMin: 8, repsMax: 15, unit: 'reps', perSide: false, startWeight: 'น้ำหนักตัว', note: 'คุกเข่าได้ถ้ายังไม่ไหว', video: yt('push up proper form') },
+        { id: 'shoulder_press', name: 'Standing Shoulder Press', sets: 3, repsMin: 8, repsMax: 10, unit: 'reps', perSide: false, startWeight: '6–8 กก./ข้าง', note: '', video: yt('standing dumbbell shoulder press form') },
+        { id: 'lateral_raise_mon', name: 'Lateral Raise', sets: 2, repsMin: 12, repsMax: 15, unit: 'reps', perSide: false, startWeight: '2–4 กก./ข้าง', note: 'เพิ่มเข้ามาให้ไหล่ข้างได้ฝึกพอ', video: yt('dumbbell lateral raise form') },
+        { id: 'tricep_ext_mon', name: 'Overhead Tricep Extension', sets: 3, repsMin: 10, repsMax: 12, unit: 'reps', perSide: false, startWeight: '6–8 กก. (ดัมเบลเดียว สองมือ)', note: '', video: yt('dumbbell overhead tricep extension form') },
+      ],
+    },
+    tue: {
+      key: 'tue', label: 'อังคาร', type: 'run_abs', title: 'วิ่ง Zone 2 + Abs A (ท้องบน + แกนกลาง)',
+      restSeconds: 45,
+      run: { minMinutes: 30, maxMinutes: 45, hrLow: 106, hrHigh: 124 },
+      exercises: [
+        { id: 'weighted_crunch', name: 'Weighted Crunch', sets: 3, repsMin: 12, repsMax: 15, unit: 'reps', perSide: false, startWeight: '3–5 กก. (เริ่มสัปดาห์ 5)', note: 'กอดดัมเบลไว้ที่อก', video: yt('dumbbell weighted crunch form') },
+        { id: 'reverse_crunch', name: 'Reverse Crunch', sets: 3, repsMin: 12, repsMax: 15, unit: 'reps', perSide: false, startWeight: 'น้ำหนักตัว', note: '', video: yt('reverse crunch proper form') },
+        { id: 'dead_bug', name: 'Dead Bug', sets: 3, repsMin: 8, repsMax: 10, unit: 'reps', perSide: true, startWeight: 'น้ำหนักตัว', note: '', video: yt('dead bug exercise form') },
+        { id: 'plank_tue', name: 'Plank', sets: 3, repsMin: 30, repsMax: 45, unit: 'seconds', perSide: false, startWeight: 'น้ำหนักตัว', note: '', video: yt('plank proper form') },
+      ],
+    },
+    wed: {
+      key: 'wed', label: 'พุธ', type: 'lift', title: 'Day B · หลัง + แขนหน้า + ต้นขาหลัง',
+      restSeconds: 75,
+      exercises: [
+        { id: 'rdl', name: 'Romanian Deadlift (RDL)', sets: 3, repsMin: 10, repsMax: 12, unit: 'reps', perSide: false, startWeight: '12–15 กก./ข้าง', note: '', video: yt('romanian deadlift dumbbell form') },
+        { id: 'single_row', name: 'Single-Arm Row', sets: 3, repsMin: 10, repsMax: 10, unit: 'reps', perSide: true, startWeight: '12–15 กก.', note: 'วางมือ-เข่าบนโซฟา/ขอบเตียง', video: yt('single arm dumbbell row form') },
+        { id: 'reverse_fly', name: 'Reverse Fly', sets: 3, repsMin: 12, repsMax: 15, unit: 'reps', perSide: false, startWeight: '2–4 กก./ข้าง', note: 'ก้มตัว หลังตรง', video: yt('dumbbell bent over reverse fly') },
+        { id: 'bicep_curl_wed', name: 'Bicep Curl', sets: 3, repsMin: 10, repsMax: 12, unit: 'reps', perSide: false, startWeight: '6–8 กก./ข้าง', note: '', video: yt('dumbbell bicep curl proper form') },
+        { id: 'hammer_curl', name: 'Hammer Curl', sets: 2, repsMin: 12, repsMax: 12, unit: 'reps', perSide: false, startWeight: '6–8 กก./ข้าง', note: '', video: yt('dumbbell hammer curl form') },
+      ],
+    },
+    thu: {
+      key: 'thu', label: 'พฤหัส', type: 'run_abs', title: 'วิ่ง Zone 2 + Abs B (ท้องล่าง + ด้านข้าง)',
+      restSeconds: 45,
+      run: { minMinutes: 30, maxMinutes: 45, hrLow: 106, hrHigh: 124 },
+      exercises: [
+        { id: 'bicycle_crunch', name: 'Bicycle Crunch', sets: 3, repsMin: 15, repsMax: 15, unit: 'reps', perSide: true, startWeight: 'น้ำหนักตัว', note: 'ทำช้าๆ คุมจังหวะ', video: yt('bicycle crunch proper form') },
+        { id: 'leg_raise', name: 'Lying Leg Raise', sets: 3, repsMin: 10, repsMax: 15, unit: 'reps', perSide: false, startWeight: 'น้ำหนักตัว', note: 'งอเข่าได้ถ้าหลังล่างแอ่น', video: yt('lying leg raise form') },
+        { id: 'russian_twist', name: 'Russian Twist', sets: 3, repsMin: 12, repsMax: 12, unit: 'reps', perSide: true, startWeight: '3–5 กก. (เริ่มสัปดาห์ 5)', note: 'เท้าแตะพื้นตลอด บิดช้าๆ', video: yt('dumbbell russian twist form') },
+        { id: 'side_plank', name: 'Side Plank', sets: 3, repsMin: 20, repsMax: 40, unit: 'seconds', perSide: true, startWeight: 'น้ำหนักตัว', note: '', video: yt('side plank proper form') },
+      ],
+    },
+    fri: {
+      key: 'fri', label: 'ศุกร์', type: 'lift', title: 'Day C · ไหล่ข้าง + อก + ขาทีละข้าง',
+      restSeconds: 75,
+      exercises: [
+        { id: 'reverse_lunge', name: 'Reverse Lunge', sets: 3, repsMin: 10, repsMax: 10, unit: 'reps', perSide: true, startWeight: '7–10 กก./ข้าง', note: 'สัปดาห์ 1–2: ทำ 2 เซ็ต ไม่ถือน้ำหนัก', video: yt('dumbbell reverse lunge form') },
+        { id: 'floor_fly', name: 'Floor Fly', sets: 3, repsMin: 12, repsMax: 12, unit: 'reps', perSide: false, startWeight: '4–6 กก./ข้าง', note: '', video: yt('dumbbell floor fly') },
+        { id: 'lateral_raise_fri', name: 'Lateral Raise', sets: 3, repsMin: 12, repsMax: 15, unit: 'reps', perSide: false, startWeight: '2–4 กก./ข้าง', note: '', video: yt('dumbbell lateral raise form') },
+        { id: 'bent_over_row', name: 'Bent-Over Row (สองมือ)', sets: 3, repsMin: 10, repsMax: 12, unit: 'reps', perSide: false, startWeight: '8–12 กก./ข้าง', note: 'ย่อเข่าเล็กน้อย หลังตรง', video: yt('dumbbell bent over row form') },
+        { id: 'curl_kickback', name: 'Bicep Curl + Tricep Kickback (สลับ)', sets: 2, repsMin: 12, repsMax: 12, unit: 'reps', perSide: false, startWeight: '5–8 กก./ข้าง', note: '', video: yt('dumbbell tricep kickback form') },
+      ],
+    },
+    sat: {
+      key: 'sat', label: 'เสาร์', type: 'run_abs', title: 'วิ่ง Zone 2 (ยาว) + Abs C',
+      restSeconds: 45,
+      run: { minMinutes: 40, maxMinutes: 45, hrLow: 106, hrHigh: 124 },
+      exercises: [
+        { id: 'pullover_crunch', name: 'Dumbbell Pullover Crunch', sets: 3, repsMin: 10, repsMax: 12, unit: 'reps', perSide: false, startWeight: '3–5 กก. (เริ่มสัปดาห์ 5)', note: '', video: yt('dumbbell pullover crunch') },
+        { id: 'toe_touch', name: 'Dumbbell Toe Touch / V-Up', sets: 3, repsMin: 10, repsMax: 12, unit: 'reps', perSide: false, startWeight: 'น้ำหนักตัว', note: '', video: yt('dumbbell toe touch crunch') },
+        { id: 'suitcase_carry', name: 'Suitcase Carry', sets: 3, repsMin: 30, repsMax: 30, unit: 'meters', perSide: true, startWeight: '12–15 กก.', note: 'พื้นที่ไม่พอ ให้ย่ำเท้า 40 วิ/ข้างแทน', video: yt('suitcase carry form') },
+        { id: 'hollow_hold', name: 'Hollow Body Hold', sets: 3, repsMin: 20, repsMax: 30, unit: 'seconds', perSide: false, startWeight: 'น้ำหนักตัว', note: '', video: yt('hollow body hold beginner') },
+      ],
+    },
+    sun: { key: 'sun', label: 'อาทิตย์', type: 'rest', title: 'พัก + ยืดเหยียด', restSeconds: 0, exercises: [] },
+  },
+};
+
+const DAY_ORDER = ['mon','tue','wed','thu','fri','sat','sun'];
+
+// ===== จาก calc.mjs =====
+// ============================================================
+// Calc — คำนวณ BMI, Body Fat % (US Navy), Lean Mass และเกณฑ์
+// ============================================================
+
+function calcMetrics({ height, weight, waist, neck }) {
+  if (!(height > 0) || !(weight > 0) || !(waist > 0) || !(neck > 0)) {
+    return { error: 'INVALID_INPUT' };
+  }
+  if (waist <= neck) {
+    return { error: 'WAIST_LTE_NECK' };
+  }
+  const heightM = height / 100;
+  const bmi = weight / (heightM * heightM);
+
+  const waistIn = waist / 2.54;
+  const neckIn = neck / 2.54;
+  const heightIn = height / 2.54;
+  let bf = 86.010 * Math.log10(waistIn - neckIn) - 70.041 * Math.log10(heightIn) + 36.76;
+  bf = Math.max(2, Math.min(50, bf));
+
+  const fatMass = weight * (bf / 100);
+  const lbm = weight - fatMass;
+  const leanPct = 100 - bf;
+
+  return { bmi, bf, fatMass, lbm, leanPct, error: null };
+}
+
+function bmiCategory(bmi) {
+  if (bmi < 18.5) return 'ต่ำกว่าเกณฑ์';
+  if (bmi < 25) return 'ปกติ';
+  if (bmi < 30) return 'น้ำหนักเกิน';
+  return 'อ้วน';
+}
+
+function bfCategory(bf) {
+  if (bf < 6) return 'นักกีฬา';
+  if (bf <= 17) return 'ฟิต';
+  if (bf <= 24) return 'ปกติ';
+  return 'เกินเกณฑ์';
+}
+
+function leanCategory(pct) {
+  if (pct >= 85) return 'สูงมาก';
+  if (pct >= 70) return 'ดี';
+  return 'ต่ำ';
+}
+
+// ===== จาก schedule.mjs =====
+// ============================================================
+// Schedule — คำนวณสัปดาห์ที่เท่าไร, วันนี้เล่นอะไร, ใช้กฎไหน
+// ============================================================
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+// คืนวันที่แบบ YYYY-MM-DD จาก Date object (ใช้ local time)
+function toDateKey(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function parseDateKey(key) {
+  const [y, m, d] = key.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+// สัปดาห์ที่ 1 เริ่มนับจาก startDateKey (รวมวันนั้น) ทุก 7 วันขึ้นสัปดาห์ใหม่
+function getWeekNumber(startDateKey, todayDateKey) {
+  const start = parseDateKey(startDateKey);
+  const today = parseDateKey(todayDateKey);
+  const diffDays = Math.floor((today - start) / MS_PER_DAY);
+  if (diffDays < 0) return { week: 0, status: 'BEFORE_START' };
+  const week = Math.floor(diffDays / 7) + 1;
+  if (week > PROGRAM.totalWeeks) return { week, status: 'FINISHED' };
+  return { week, status: 'ACTIVE' };
+}
+
+function isLightWeek(week) {
+  return PROGRAM.lightWeeks.includes(week);
+}
+
+function getDayKeyFromDate(d) {
+  // JS getDay(): 0=Sun..6=Sat → แปลงเป็น key ของเรา
+  const map = ['sun','mon','tue','wed','thu','fri','sat'];
+  return map[d.getDay()];
+}
+
+// คืนแผนของวันนี้ พร้อมปรับเซ็ตตามกฎสัปดาห์
+function getTodayPlan(startDateKey, todayDateKey) {
+  const { week, status } = getWeekNumber(startDateKey, todayDateKey);
+  const dayKey = getDayKeyFromDate(parseDateKey(todayDateKey));
+  const dayDef = PROGRAM.days[dayKey];
+
+  if (status === 'BEFORE_START') {
+    return { week: 0, status, dayKey, day: dayDef, exercises: [] };
+  }
+  if (status === 'FINISHED') {
+    return { week, status, dayKey, day: dayDef, exercises: [] };
+  }
+
+  const light = isLightWeek(week);
+  const exercises = (dayDef.exercises || []).map(ex => {
+    let sets = ex.sets;
+    let note = ex.note;
+    let useWeight = true;
+
+    if (light) {
+      sets = Math.max(1, Math.ceil(ex.sets / 2));
+      note = (note ? note + ' · ' : '') + 'สัปดาห์เบา: ลดเซ็ตครึ่งหนึ่ง';
+    } else if (week >= 1 && week <= 4 && dayDef.type === 'run_abs') {
+      sets = 2;
+      useWeight = false;
+      note = (note ? note + ' · ' : '') + 'สัปดาห์ 1–4: ไม่ถือน้ำหนัก';
+    } else if (week >= 1 && week <= 2 && ex.id === 'reverse_lunge') {
+      sets = 2;
+      useWeight = false;
+      note = (note ? note + ' · ' : '') + 'สัปดาห์ 1–2: ไม่ถือน้ำหนัก';
+    }
+
+    let tempo = null;
+    if (week >= 10 && week <= 12 && dayDef.type === 'lift') {
+      tempo = 'ลงช้า 3 วินาที';
+    }
+
+    return { ...ex, sets, note, useWeight, tempo };
+  });
+
+  return { week, status, light, dayKey, day: dayDef, exercises };
+}
+
+
+// ===== จาก progression.mjs =====
+// ============================================================
+// Progression — แนะนำน้ำหนัก/จำนวนครั้ง/เวลา ครั้งถัดไป
+// กฎ: ทำครบสูงสุดทุกเซ็ต 2 ครั้งติด → เพิ่ม
+//     ทำไม่ถึงขั้นต่ำ 2 ครั้งติด → ลด
+//     นอกนั้น → คงน้ำหนักเดิม พยายาม +1
+// ============================================================
+
+function hitMaxAllSets(sets, target) {
+  if (!sets || sets.length === 0) return false;
+  return sets.every(s => s.reps >= target);
+}
+function belowMinAnySet(sets, target) {
+  if (!sets || sets.length === 0) return false;
+  return sets.some(s => s.reps < target);
+}
+function avgWeight(sets) {
+  const withWeight = sets.filter(s => typeof s.kg === 'number' && s.kg > 0);
+  if (withWeight.length === 0) return null;
+  return withWeight.reduce((a, s) => a + s.kg, 0) / withWeight.length;
+}
+
+// ดึงประวัติของท่านี้จาก sessions เรียงตามวันที่ (เก่า→ใหม่)
+function getExerciseHistory(sessions, exerciseId) {
+  const dates = Object.keys(sessions).sort(); // YYYY-MM-DD เรียงได้ตรงตามตัวอักษร
+  const out = [];
+  for (const date of dates) {
+    const s = sessions[date];
+    if (s && s.sets && s.sets[exerciseId]) {
+      out.push({ date, sets: s.sets[exerciseId] });
+    }
+  }
+  return out;
+}
+
+function recommendNext(exDef, sessions, { isLightWeek = false, plateStep = 1.25 } = {}) {
+  const history = getExerciseHistory(sessions, exDef.id);
+
+  if (history.length === 0) {
+    return {
+      action: 'START',
+      message: `ครั้งแรก ลองเริ่มที่ ${exDef.startWeight}`,
+      suggestedWeight: null,
+      suggestedReps: exDef.repsMin,
+    };
+  }
+
+  const last = history[history.length - 1];
+  const lastAvgW = avgWeight(last.sets);
+
+  if (isLightWeek) {
+    return {
+      action: 'HOLD_LIGHT',
+      message: 'สัปดาห์เบา: ใช้น้ำหนักเดิม ลดเซ็ต ไม่ต้องเพิ่ม',
+      suggestedWeight: lastAvgW,
+      suggestedReps: exDef.repsMin,
+    };
+  }
+
+  const isTimed = exDef.unit === 'seconds';
+  const target = exDef.repsMax;
+
+  const lastHitMax = hitMaxAllSets(last.sets, target);
+  const lastBelowMin = belowMinAnySet(last.sets, exDef.repsMin);
+
+  let prevHitMax = false;
+  let prevBelowMin = false;
+  if (history.length >= 2) {
+    const prev = history[history.length - 2];
+    prevHitMax = hitMaxAllSets(prev.sets, target);
+    prevBelowMin = belowMinAnySet(prev.sets, exDef.repsMin);
+  }
+
+  // ทำครบสูงสุดทุกเซ็ต 2 ครั้งติด → เพิ่ม
+  if (lastHitMax && prevHitMax) {
+    if (isTimed) {
+      return { action: 'INCREASE_TIME', message: `ทำครบ ${target} วินาทีทุกเซ็ต 2 ครั้งติด → เพิ่มเป็น ${target + 5} วินาที`, suggestedWeight: lastAvgW, suggestedReps: target + 5 };
+    }
+    if (lastAvgW != null) {
+      return { action: 'INCREASE_WEIGHT', message: `ทำครบทุกเซ็ต 2 ครั้งติด → เพิ่มน้ำหนักเป็น ${(lastAvgW + plateStep).toFixed(2)} กก.`, suggestedWeight: lastAvgW + plateStep, suggestedReps: exDef.repsMin };
+    }
+    return { action: 'INCREASE_REPS', message: `ทำครบทุกเซ็ต 2 ครั้งติด → เพิ่มเป็น ${target + 2} ครั้ง`, suggestedWeight: null, suggestedReps: target + 2 };
+  }
+
+  // ทำไม่ถึงขั้นต่ำ 2 ครั้งติด → ลด
+  if (lastBelowMin && prevBelowMin) {
+    if (lastAvgW != null) {
+      const next = Math.max(0, lastAvgW - plateStep);
+      return { action: 'DECREASE_WEIGHT', message: `ทำไม่ถึงเป้า 2 ครั้งติด → ลดน้ำหนักเป็น ${next.toFixed(2)} กก.`, suggestedWeight: next, suggestedReps: exDef.repsMin };
+    }
+    return { action: 'DECREASE_REPS', message: 'ทำไม่ถึงเป้า 2 ครั้งติด → ลดจำนวนครั้งลงเล็กน้อย พักให้เต็มที่', suggestedWeight: null, suggestedReps: Math.max(1, exDef.repsMin - 2) };
+  }
+
+  // ปกติ → คงน้ำหนักเดิม พยายาม +1
+  return {
+    action: 'HOLD',
+    message: lastAvgW != null ? `ใช้น้ำหนักเดิม ${lastAvgW.toFixed(2)} กก. ลองเพิ่มอีก 1 ครั้ง` : 'ใช้ท่าเดิม ลองเพิ่มอีก 1 ครั้ง',
+    suggestedWeight: lastAvgW,
+    suggestedReps: Math.min(target, (last.sets[0]?.reps || exDef.repsMin) + 1),
+  };
+}
+
+// ===== จาก timer.mjs =====
+// ============================================================
+// Timer — นาฬิกาพักระหว่างเซ็ต คำนวณจากเวลาจริง (timestamp diff)
+// ทำแบบนี้เพื่อไม่ให้พังเมื่อผู้ใช้สลับแอปหรือหน้าจอดับ (setInterval ของ
+// iOS Safari จะถูกหยุด/หน่วงเมื่อแอปอยู่เบื้องหลัง แต่ Date.now() เดินตามจริงเสมอ)
+// ============================================================
+
+function startTimer(durationSeconds, now = Date.now()) {
+  return { startedAt: now, duration: durationSeconds, extended: 0 };
+}
+
+function remainingSeconds(timerState, now = Date.now()) {
+  if (!timerState) return 0;
+  const elapsed = (now - timerState.startedAt) / 1000;
+  const total = timerState.duration + timerState.extended;
+  return Math.max(0, Math.ceil(total - elapsed));
+}
+
+function extendTimer(timerState, extraSeconds) {
+  return { ...timerState, extended: timerState.extended + extraSeconds };
+}
+
+function isTimerDone(timerState, now = Date.now()) {
+  return remainingSeconds(timerState, now) <= 0;
+}
+
+// ===== จาก session.mjs =====
+// ============================================================
+// Session — บันทึกเซ็ตที่เล่นจริงในแต่ละวัน
+// ============================================================
+
+function ensureSession(state, dateKey, dayKey) {
+  if (!state.sessions[dateKey]) {
+    state.sessions[dateKey] = { day: dayKey, completed: false, sets: {}, run: null };
+  }
+  return state.sessions[dateKey];
+}
+
+// บันทึกค่าของเซ็ตที่ setIndex (0-based) ของท่า exerciseId
+function recordSet(state, dateKey, dayKey, exerciseId, setIndex, value) {
+  const kg = value.kg === null || value.kg === undefined || value.kg === '' ? null : Number(value.kg);
+  const repsRaw = value.reps;
+
+  if (kg !== null && (isNaN(kg) || kg < 0)) return { ok: false, error: 'INVALID_KG' };
+  if (repsRaw === '' || repsRaw === null || repsRaw === undefined) return { ok: false, error: 'INVALID_REPS' };
+  const reps = Number(repsRaw);
+  if (isNaN(reps) || reps < 0) return { ok: false, error: 'INVALID_REPS' };
+
+  const session = ensureSession(state, dateKey, dayKey);
+  if (!session.sets[exerciseId]) session.sets[exerciseId] = [];
+  session.sets[exerciseId][setIndex] = { kg, reps };
+  return { ok: true };
+}
+
+function recordRun(state, dateKey, dayKey, { minutes, avgHr }) {
+  const m = Number(minutes);
+  if (isNaN(m) || m < 0) return { ok: false, error: 'INVALID_MINUTES' };
+  const session = ensureSession(state, dateKey, dayKey);
+  session.run = { minutes: m, avgHr: avgHr === '' || avgHr === undefined ? null : Number(avgHr) };
+  return { ok: true };
+}
+
+// ตรวจว่าทุกท่าของแผนวันนี้ถูกบันทึกครบทุกเซ็ตหรือยัง
+function isDayComplete(state, dateKey, planExercises) {
+  const session = state.sessions[dateKey];
+  if (!session) return false;
+  for (const ex of planExercises) {
+    const recorded = session.sets[ex.id];
+    if (!recorded) return false;
+    if (recorded.length < ex.sets) return false;
+    for (let i = 0; i < ex.sets; i++) {
+      if (!recorded[i]) return false;
+    }
+  }
+  return true;
+}
+
+function markCompleted(state, dateKey, value = true) {
+  if (state.sessions[dateKey]) state.sessions[dateKey].completed = value;
+}
+
+// ===== จาก store.mjs =====
+// ============================================================
+// Store — อ่าน/บันทึกข้อมูลผู้ใช้ ผ่าน localStorage (หรือ backend จำลองตอนเทส)
+// ============================================================
+
+const SCHEMA_VERSION = 3;
+const STORAGE_KEY = 'fitness:v3';
+const OLD_CHECKLIST_KEY = 'workout43:state'; // แอปเวอร์ชันก่อน
+const OLD_HISTORY_KEY = 'workout43:history'; // แอปเวอร์ชันก่อน
+
+function defaultState() {
+  return {
+    schemaVersion: SCHEMA_VERSION,
+    settings: {
+      startDate: null,      // YYYY-MM-DD ตั้งครั้งแรกที่เปิดแอป
+      restSecondsLift: 75,
+      restSecondsAbs: 45,
+      plateStep: 1.25,
+      profile: { age: null, height: null },
+      lastBackupAt: null,   // ISO timestamp
+    },
+    sessions: {},            // { "YYYY-MM-DD": { day, completed, sets, run } }
+    bodyLogs: [],            // [{ date, weight, waist, neck, height, age, bmi, bf, fatMass, lbm, leanPct }]
+  };
+}
+
+// ---------- in-memory backend สำหรับ Node test (จำลอง localStorage) ----------
+function makeMemoryBackend() {
+  const map = new Map();
+  return {
+    getItem: (k) => (map.has(k) ? map.get(k) : null),
+    setItem: (k, v) => { map.set(k, String(v)); },
+    removeItem: (k) => { map.delete(k); },
+  };
+}
+
+function createStore(backend) {
+  function load() {
+    const raw = backend.getItem(STORAGE_KEY);
+    if (!raw) return defaultState();
+    try {
+      const parsed = JSON.parse(raw);
+      return migrate(parsed);
+    } catch (e) {
+      return defaultState();
+    }
+  }
+
+  function save(state) {
+    backend.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  // แปลงข้อมูลจากเวอร์ชันเก่า (ถ้ามี) หรือเติม field ที่ขาดของ schema ปัจจุบัน
+  function migrate(parsed) {
+    const base = defaultState();
+    if (!parsed || typeof parsed !== 'object') return base;
+    const merged = {
+      ...base,
+      ...parsed,
+      settings: { ...base.settings, ...(parsed.settings || {}) },
+      sessions: parsed.sessions && typeof parsed.sessions === 'object' ? parsed.sessions : {},
+      bodyLogs: Array.isArray(parsed.bodyLogs) ? parsed.bodyLogs : [],
+    };
+    merged.schemaVersion = SCHEMA_VERSION;
+    return merged;
+  }
+
+  // นำเข้าโค้ดสำรองแบบเก่า (base64 JSON ของเช็คลิสต์ + ประวัติแยกกัน)
+  function importLegacyChecklistCode(code) {
+    try {
+      const obj = JSON.parse(decodeURIComponent(escape(atob(code))));
+      if (typeof obj.week !== 'number' || !obj.checks) throw new Error('bad format');
+      return { ok: true, legacy: obj };
+    } catch (e) {
+      return { ok: false, error: 'INVALID_CODE' };
+    }
+  }
+
+  return { load, save, migrate, importLegacyChecklistCode };
+}
+
+// ===== จาก backup.mjs =====
+// ============================================================
+// Backup — สร้างไฟล์สำรอง .json และตรวจสอบไฟล์ก่อนนำเข้า
+// ============================================================
+
+function buildBackupPayload(state) {
+  return {
+    app: 'fitness',
+    schemaVersion: SCHEMA_VERSION,
+    exportedAt: new Date().toISOString(),
+    data: state,
+  };
+}
+
+function backupFileName(dateObj = new Date()) {
+  const y = dateObj.getFullYear();
+  const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const d = String(dateObj.getDate()).padStart(2, '0');
+  return `fitness-backup-${y}-${m}-${d}.json`;
+}
+
+// ตรวจสอบไฟล์ที่นำเข้าว่าเป็นไฟล์ของแอปนี้จริงและโครงสร้างถูกต้อง
+function validateBackupPayload(raw) {
+  let obj;
+  try {
+    obj = typeof raw === 'string' ? JSON.parse(raw) : raw;
+  } catch (e) {
+    return { ok: false, error: 'NOT_JSON' };
+  }
+  if (!obj || typeof obj !== 'object') return { ok: false, error: 'NOT_OBJECT' };
+  if (obj.app !== 'fitness') return { ok: false, error: 'WRONG_APP' };
+  if (typeof obj.schemaVersion !== 'number') return { ok: false, error: 'NO_SCHEMA_VERSION' };
+  if (!obj.data || typeof obj.data !== 'object') return { ok: false, error: 'NO_DATA' };
+  if (!obj.data.sessions || typeof obj.data.sessions !== 'object') return { ok: false, error: 'NO_SESSIONS' };
+  if (!Array.isArray(obj.data.bodyLogs)) return { ok: false, error: 'NO_BODYLOGS' };
+
+  const sessionCount = Object.keys(obj.data.sessions).length;
+  const bodyLogCount = obj.data.bodyLogs.length;
+  return { ok: true, summary: { sessionCount, bodyLogCount, exportedAt: obj.exportedAt }, data: obj.data };
+}
+
+function daysSince(isoDate) {
+  if (!isoDate) return Infinity;
+  const then = new Date(isoDate).getTime();
+  const now = Date.now();
+  return (now - then) / (1000 * 60 * 60 * 24);
+}
+
+</script>
+<script>
+// ============================================================
+// APP — ต่อ UI เข้ากับโมดูล logic ที่ทดสอบผ่านแล้วทั้งหมด (ด้านบน)
+// ============================================================
+(function () {
+  'use strict';
+
+  // ---------- storage backend: localStorage จริง หรือ memory ถ้าใช้ไม่ได้ ----------
+  function realBackend() {
+    try {
+      localStorage.setItem('__t', '1'); localStorage.removeItem('__t');
+      return { getItem: (k) => localStorage.getItem(k), setItem: (k, v) => localStorage.setItem(k, v), removeItem: (k) => localStorage.removeItem(k) };
+    } catch (e) { return null; }
+  }
+  const backend = realBackend() || makeMemoryBackend();
+  const storageOK = realBackend() !== null;
+  const store = createStore(backend);
+  let state = store.load();
+
+  function save() { store.save(state); }
+  function todayKey() { return toDateKey(new Date()); }
+
+  // ---------- router ----------
+  function go(btn) {
+    document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    document.querySelectorAll('section.view').forEach(s => s.classList.remove('active'));
+    document.getElementById(btn.dataset.v).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  window.go = go;
+
+  // ---------- topbar ----------
+  function renderTopbar() {
+    const wkLabel = document.getElementById('wkLabel');
+    const wkPhase = document.getElementById('wkPhase');
+    const ringFg = document.getElementById('ringFg');
+    const circ = 2 * Math.PI * 15.5;
+
+    if (!state.settings.startDate) {
+      wkLabel.textContent = 'ยังไม่ตั้งวันเริ่ม';
+      wkPhase.textContent = 'ไปที่ตั้งค่า';
+      ringFg.style.strokeDashoffset = circ;
+      return;
+    }
+    const { week, status } = getWeekNumber(state.settings.startDate, todayKey());
+    if (status === 'BEFORE_START') {
+      wkLabel.textContent = 'ยังไม่ถึงวันเริ่ม';
+      ringFg.style.strokeDashoffset = circ;
+      return;
+    }
+    if (status === 'FINISHED') {
+      wkLabel.textContent = 'จบโปรแกรมแล้ว 🎉';
+      wkPhase.textContent = '12/12';
+      ringFg.style.strokeDashoffset = 0;
+      return;
+    }
+    wkLabel.textContent = `สัปดาห์ ${week}/12`;
+    let phase = 'ปรับตัว';
+    if (isLightWeek(week)) phase = 'สัปดาห์เบา';
+    else if (week >= 10) phase = 'เก็บรายละเอียด';
+    else if (week >= 5) phase = 'เพิ่มความหนัก';
+    wkPhase.textContent = phase;
+
+    const plan = getTodayPlan(state.settings.startDate, todayKey());
+    const frac = dayProgressFraction(plan);
+    ringFg.style.strokeDashoffset = circ * (1 - frac);
+  }
+
+  function dayProgressFraction(plan) {
+    if (!plan || !plan.exercises || plan.exercises.length === 0) return 0;
+    const session = state.sessions[todayKey()];
+    let totalSets = 0, filledSets = 0;
+    for (const ex of plan.exercises) {
+      totalSets += ex.sets;
+      const rec = session && session.sets[ex.id];
+      if (rec) {
+        for (let i = 0; i < ex.sets; i++) if (rec[i]) filledSets++;
+      }
+    }
+    // ถ้าเป็นวันวิ่ง+ท้อง นับการบันทึกวิ่งเป็นอีก 1 "หน่วย" รวมในสัดส่วนด้วย
+    if (plan.day.type === 'run_abs') {
+      totalSets += 1;
+      if (session && session.run) filledSets += 1;
+    }
+    return totalSets > 0 ? filledSets / totalSets : 0;
+  }
+
+  // ---------- backup banner ----------
+  function renderBanner() {
+    const banner = document.getElementById('backupBanner');
+    const text = document.getElementById('backupBannerText');
+    const d = daysSince(state.settings.lastBackupAt);
+    if (state.settings.startDate && d >= 7) {
+      text.textContent = state.settings.lastBackupAt
+        ? `⚠️ ไม่ได้สำรองข้อมูล ${Math.floor(d)} วันแล้ว`
+        : '⚠️ ยังไม่เคยสำรองข้อมูลเลย';
+      banner.style.display = 'flex';
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+
+  // ---------- แท็บ "วันนี้" ----------
+  function renderToday() {
+    const el = document.getElementById('v-today');
+    if (!state.settings.startDate) {
+      el.innerHTML = `
+        <div class="card">
+          <h3>ยังไม่ได้ตั้งวันเริ่มโปรแกรม</h3>
+          <p>ไปที่แท็บ "ตั้งค่า" เพื่อเลือกวันเริ่ม แอปจะคำนวณสัปดาห์และท่าของแต่ละวันให้อัตโนมัติ</p>
+          <button class="btn primary block" data-act="goto-settings">ไปที่ตั้งค่า →</button>
+        </div>`;
+      return;
+    }
+
+    const plan = getTodayPlan(state.settings.startDate, todayKey());
+    if (plan.status === 'BEFORE_START') {
+      el.innerHTML = `<div class="card"><p>วันเริ่มโปรแกรมยังมาไม่ถึง กลับมาเปิดแอปในวันนั้นได้เลย</p></div>`;
+      return;
+    }
+    if (plan.status === 'FINISHED') {
+      el.innerHTML = `
+        <div class="card finishcard">
+          <div style="font-size:34px">🎉</div>
+          <h3 style="color:#fff">จบโปรแกรม 12 สัปดาห์แล้ว!</h3>
+          <p style="color:#B9C0CC">เยี่ยมมากที่ทำจนครบ ดูความก้าวหน้าทั้งหมดได้ที่แท็บ "ติดตาม" อยากเริ่มรอบใหม่ ตั้งวันเริ่มใหม่ได้ที่ตั้งค่า (ประวัติเดิมยังอยู่ครบ)</p>
+          <button class="btn accent block" data-act="goto-settings">ตั้งวันเริ่มใหม่</button>
+        </div>`;
+      return;
+    }
+
+    if (plan.dayKey === 'sun') {
+      el.innerHTML = `
+        <div class="card restday">
+          <div class="big">🛌</div>
+          <h3>วันพัก + ยืดเหยียด</h3>
+          <p>ให้กล้ามเนื้อฟื้นตัวเต็มที่ ยืดเบาๆ 15–20 นาที หรือเดินเล่นสบายๆ พรุ่งนี้กลับมาลุยต่อ</p>
+        </div>`;
+      return;
+    }
+
+    let html = `<h2 class="head">${plan.day.title}</h2>`;
+    if (plan.light) html += `<div class="note">🪶 สัปดาห์เบา: เซ็ตลดลงครึ่งหนึ่งอัตโนมัติ ใช้น้ำหนักเดิม ไม่ต้องเพิ่ม</div>`;
+
+    // การ์ดวิ่ง (เฉพาะวัน run_abs)
+    if (plan.day.type === 'run_abs') {
+      const session = state.sessions[todayKey()];
+      const run = session && session.run;
+      html += `
+        <div class="card runcard">
+          <h3 style="color:#fff">🏃 วิ่ง Zone 2</h3>
+          <p style="color:#B9C0CC">${plan.day.run.minMinutes}–${plan.day.run.maxMinutes} นาที · ชีพจร ${plan.day.run.hrLow}–${plan.day.run.hrHigh} bpm</p>
+          <div class="setgrid">
+            <div class="setrow">
+              <input type="number" inputmode="decimal" id="runMinutes" placeholder="นาที" value="${run ? run.minutes : ''}">
+              <span class="unit">นาที</span>
+              <input type="number" inputmode="decimal" id="runHr" placeholder="ชีพจรเฉลี่ย" value="${run && run.avgHr != null ? run.avgHr : ''}">
+              <span class="unit">bpm</span>
+              <button class="okbtn ${run ? 'filled' : ''}" data-act="save-run" style="background:${run ? 'var(--grow)' : 'rgba(255,255,255,.15)'};color:#fff">✓</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    const session = state.sessions[todayKey()];
+    for (const ex of plan.exercises) {
+      const recorded = (session && session.sets[ex.id]) || [];
+      const allFilled = recorded.length >= ex.sets && recorded.slice(0, ex.sets).every(Boolean);
+      const rec = recommendNext(ex, state.sessions, { isLightWeek: plan.light, plateStep: state.settings.plateStep });
+      const unitLabel = ex.unit === 'seconds' ? 'วิ' : (ex.unit === 'meters' ? 'ม.' : 'ครั้ง');
+      const sideLabel = ex.perSide ? ' /ข้าง' : '';
+
+      let setsHtml = '';
+      for (let i = 0; i < ex.sets; i++) {
+        const v = recorded[i];
+        const filled = !!v;
+        setsHtml += `
+          <div class="setrow ${filled ? 'filled' : ''}">
+            <span class="sn">${i + 1}</span>
+            <input type="number" inputmode="decimal" placeholder="กก." value="${v && v.kg != null ? v.kg : ''}" id="kg-${ex.id}-${i}">
+            <input type="number" inputmode="decimal" placeholder="${ex.repsMin}-${ex.repsMax}" value="${v ? v.reps : ''}" id="reps-${ex.id}-${i}">
+            <span class="unit">${unitLabel}${sideLabel}</span>
+            <button class="okbtn ${filled ? 'filled' : ''}" data-act="record-set" data-ex="${ex.id}" data-idx="${i}" data-day="${plan.dayKey}" data-restsec="${plan.day.restSeconds}">✓</button>
+          </div>`;
+      }
+
+      html += `
+        <div class="excard ${allFilled ? 'done' : ''}">
+          <div class="exhd">
+            <div>
+              <div class="nm">${ex.name}</div>
+              <div class="meta">${ex.sets} เซ็ต × ${ex.repsMin === ex.repsMax ? ex.repsMin : ex.repsMin + '–' + ex.repsMax} ${unitLabel}${sideLabel} · เริ่ม ${ex.startWeight}</div>
+            </div>
+            <a class="vidbtn" href="${ex.video}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></a>
+          </div>
+          ${ex.note ? `<span class="exnote">${ex.note}</span>` : ''}
+          ${ex.tempo ? `<span class="exnote">⏱ ${ex.tempo}</span>` : ''}
+          <div class="exrec">💡 ${rec.message}</div>
+          <div class="setgrid">${setsHtml}</div>
+        </div>`;
+    }
+
+    el.innerHTML = html;
+  }
+
+  // ---------- แท็บ "โปรแกรม" ----------
+  function lastWeightFor(exId) {
+    const hist = getExerciseHistory(state.sessions, exId);
+    if (hist.length === 0) return null;
+    const last = hist[hist.length - 1];
+    const ws = last.sets.filter(s => s && typeof s.kg === 'number' && s.kg > 0);
+    if (ws.length === 0) return null;
+    return (ws.reduce((a, s) => a + s.kg, 0) / ws.length).toFixed(2);
+  }
+
+  function renderProgram() {
+    const el = document.getElementById('v-program');
+    const typeLabel = { lift: 'lift', run_abs: 'run', rest: 'rest' };
+    const typeText = { lift: 'เวท', run_abs: 'วิ่ง+ท้อง', rest: 'พัก' };
+
+    let weekRows = '';
+    for (const dk of DAY_ORDER) {
+      const d = PROGRAM.days[dk];
+      weekRows += `
+        <div class="dayline">
+          <span class="dname">${d.label}</span>
+          <div class="dcont">
+            <span class="daypill ${typeLabel[d.type]}">${typeText[d.type]}</span>
+            <div class="t" style="margin-top:5px">${d.title}</div>
+          </div>
+        </div>`;
+    }
+
+    let libraryHtml = '';
+    for (const dk of DAY_ORDER) {
+      const d = PROGRAM.days[dk];
+      if (d.exercises.length === 0) continue;
+      let rows = '';
+      for (const ex of d.exercises) {
+        const lastW = lastWeightFor(ex.id);
+        const unitLabel = ex.unit === 'seconds' ? 'วิ' : (ex.unit === 'meters' ? 'ม.' : 'ครั้ง');
+        rows += `
+          <a class="exlink" href="${ex.video}" target="_blank" rel="noopener">
+            <div class="body">
+              <span class="nm">${ex.name}</span>
+              <span class="mt">${ex.startWeight}${lastW ? ` · ล่าสุดที่ยก ${lastW} กก.` : ''}</span>
+            </div>
+            <span class="reps">${ex.sets}×${ex.repsMin === ex.repsMax ? ex.repsMin : ex.repsMin + '-' + ex.repsMax} ${unitLabel}</span>
+          </a>`;
+      }
+      libraryHtml += `
+        <details class="acc">
+          <summary>${d.label} · ${d.title} <span class="chev">▾</span></summary>
+          <div class="inner">${rows}</div>
+        </details>`;
+    }
+
+    el.innerHTML = `
+      <h2 class="head">ตารางสัปดาห์</h2>
+      <div class="card">${weekRows}</div>
+
+      <h2 class="head">คลังท่า (แตะเพื่อดูวิดีโอ)</h2>
+      ${libraryHtml}
+
+      <h2 class="head">การเพิ่มความยาก 12 สัปดาห์</h2>
+      <div class="card">
+        <div class="metricrow"><span class="lab">สัปดาห์ 1–4</span><span class="val">2–3 เซ็ต เน้นท่าถูก</span></div>
+        <div class="metricrow"><span class="lab">สัปดาห์ 5 (เบา)</span><span class="val">ลดเซ็ตครึ่งหนึ่ง</span></div>
+        <div class="metricrow"><span class="lab">สัปดาห์ 6–8</span><span class="val">3 เซ็ต เพิ่มน้ำหนัก</span></div>
+        <div class="metricrow"><span class="lab">สัปดาห์ 9 (เบา)</span><span class="val">ลดเซ็ตครึ่งหนึ่ง</span></div>
+        <div class="metricrow"><span class="lab">สัปดาห์ 10–12</span><span class="val">ลงช้า 3 วินาที</span></div>
+        <p style="margin-top:10px"><b>กฎเพิ่มน้ำหนัก:</b> ทำครบจำนวนครั้งสูงสุดทุกเซ็ต 2 ครั้งติดกัน → เพิ่มน้ำหนัก · ทำไม่ถึงขั้นต่ำ 2 ครั้งติดกัน → ลดน้ำหนัก · เป้าคือเหลือแรงอีก 1–3 ครั้งตอนจบเซ็ต</p>
+      </div>`;
+  }
+
+  // ---------- แท็บ "ติดตาม" ----------
+  let lastCalc = null;
+
+  function renderTrack() {
+    const el = document.getElementById('v-track');
+    const prof = state.settings.profile || {};
+    el.innerHTML = `
+      <h2 class="head">คำนวณค่าตัวเอง</h2>
+      <div class="card">
+        <div class="finput"><label>อายุ (ปี)</label><input type="number" id="inAge" value="${prof.age || ''}" placeholder="เช่น 43"></div>
+        <div class="finput"><label>ส่วนสูง (ซม.)</label><input type="number" id="inHeight" value="${prof.height || ''}" placeholder="เช่น 165"></div>
+        <div class="finput"><label>น้ำหนัก (กก.)</label><input type="number" id="inWeight" step="0.1" placeholder="เช่น 63"></div>
+        <div class="finput"><label>รอบเอว (ซม.)</label><input type="number" id="inWaist" step="0.1" placeholder="วัดรอบสะดือ"></div>
+        <div class="finput"><label>รอบคอ (ซม.)</label><input type="number" id="inNeck" step="0.1" placeholder="ใต้ลูกกระเดือก"></div>
+        <button class="btn primary block" data-act="calc">🧮 คำนวณ</button>
+      </div>
+      <div class="card" id="resultCard" style="display:none"></div>
+
+      <h2 class="head">ประวัติความคืบหน้า</h2>
+      <div class="card" id="trendCard" style="display:none">
+        <h3 style="margin-bottom:2px">น้ำหนัก / Body Fat</h3>
+        <p style="font-size:11.5px;color:var(--muted);margin-bottom:8px">ส้ม = น้ำหนัก · น้ำเงินประ = Body Fat %</p>
+        <svg id="trendSvg1" viewBox="0 0 300 90" style="width:100%;height:auto"></svg>
+      </div>
+      <div class="card" id="trendCard2" style="display:none">
+        <h3 style="margin-bottom:2px">รอบเอว</h3>
+        <p style="font-size:11.5px;color:var(--muted);margin-bottom:8px">แนวโน้มรอบเอว (ซม.)</p>
+        <svg id="trendSvg2" viewBox="0 0 300 90" style="width:100%;height:auto"></svg>
+      </div>
+      <div id="historyEmpty" class="card"><p style="text-align:center;color:var(--muted);margin:6px 0">ยังไม่มีประวัติ คำนวณแล้วกด "บันทึกลงประวัติ" เพื่อเริ่มเก็บข้อมูล</p></div>
+      <div id="historyList"></div>`;
+    renderHistory();
+  }
+
+  function bmiTag(bmi) { const c = bmiCategory(bmi); return `<span class="tag ${bmi < 25 && bmi >= 18.5 ? 'ok' : 'warn'}">${c}</span>`; }
+  function bfTag(bf) { const c = bfCategory(bf); return `<span class="tag ${bf <= 17 ? 'ok' : 'warn'}">${c}</span>`; }
+  function leanTag(p) { const c = leanCategory(p); return `<span class="tag ${p >= 70 ? 'ok' : 'warn'}">${c}</span>`; }
+
+  function doCalc() {
+    const age = parseFloat(document.getElementById('inAge').value) || null;
+    const height = parseFloat(document.getElementById('inHeight').value) || 0;
+    const weight = parseFloat(document.getElementById('inWeight').value) || 0;
+    const waist = parseFloat(document.getElementById('inWaist').value) || 0;
+    const neck = parseFloat(document.getElementById('inNeck').value) || 0;
+
+    const r = calcMetrics({ height, weight, waist, neck });
+    const card = document.getElementById('resultCard');
+    if (r.error === 'WAIST_LTE_NECK') {
+      card.style.display = 'block';
+      card.innerHTML = `<div class="note">⚠️ รอบเอวต้องมากกว่ารอบคอ กรุณาตรวจค่าที่กรอกอีกครั้ง</div>`;
+      lastCalc = null; return;
+    }
+    if (r.error) {
+      card.style.display = 'block';
+      card.innerHTML = `<div class="note">⚠️ กรุณากรอกตัวเลขให้ครบทุกช่อง</div>`;
+      lastCalc = null; return;
+    }
+    lastCalc = { date: todayThaiDate(), weight, waist, neck, height, age, ...r };
+    card.style.display = 'block';
+    card.innerHTML = `
+      <h3>ผลการคำนวณ</h3>
+      <div class="metricrow"><span class="lab">BMI</span><span class="val">${r.bmi.toFixed(1)} ${bmiTag(r.bmi)}</span></div>
+      <div class="metricrow"><span class="lab">Body Fat %</span><span class="val">${r.bf.toFixed(1)}% ${bfTag(r.bf)}</span></div>
+      <div class="metricrow"><span class="lab">Fat Mass</span><span class="val">${r.fatMass.toFixed(1)} kg</span></div>
+      <div class="metricrow"><span class="lab">Lean Body Mass</span><span class="val">${r.lbm.toFixed(1)} kg</span></div>
+      <div class="metricrow"><span class="lab">% Lean Mass</span><span class="val">${r.leanPct.toFixed(1)}% ${leanTag(r.leanPct)}</span></div>
+      <button class="btn primary block" style="margin-top:10px;background:var(--rest)" data-act="save-bodylog">💾 บันทึกลงประวัติวันนี้</button>`;
+
+    // จำ profile ไว้ (อายุ/ส่วนสูงไม่ค่อยเปลี่ยน)
+    state.settings.profile = { age, height };
+    save();
+  }
+
+  function todayThaiDate() {
+    const d = new Date();
+    const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear() + 543}`;
+  }
+
+  function saveBodyLog() {
+    if (!lastCalc) return;
+    state.bodyLogs.push({ ...lastCalc, ts: Date.now() });
+    state.bodyLogs.sort((a, b) => a.ts - b.ts);
+    save();
+    renderHistory();
+    renderTopbar();
+  }
+
+  function deleteBodyLog(ts) {
+    state.bodyLogs = state.bodyLogs.filter(h => h.ts !== ts);
+    save();
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const listEl = document.getElementById('historyList');
+    const emptyEl = document.getElementById('historyEmpty');
+    const trend1 = document.getElementById('trendCard');
+    const trend2 = document.getElementById('trendCard2');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+
+    if (state.bodyLogs.length === 0) {
+      emptyEl.style.display = 'block'; trend1.style.display = 'none'; trend2.style.display = 'none';
+      return;
+    }
+    emptyEl.style.display = 'none';
+
+    const rev = [...state.bodyLogs].reverse();
+    rev.forEach((h, idx) => {
+      const prev = rev[idx + 1];
+      const wDiff = prev ? (h.weight - prev.weight) : null;
+      const el = document.createElement('div');
+      el.className = 'histitem';
+      el.innerHTML = `
+        <div class="hh"><span class="hdate">📅 ${h.date}</span><button class="hdel" data-act="del-bodylog" data-ts="${h.ts}">ลบ</button></div>
+        <div class="hgrid">
+          <div class="hcell"><div class="hv">${h.weight.toFixed(1)}</div><div class="hl">น้ำหนัก</div>${wDiff !== null ? `<div style="font-size:10px;color:${wDiff <= 0 ? 'var(--grow-dk)' : 'var(--heat-dk)'}">${wDiff > 0 ? '+' : ''}${wDiff.toFixed(1)}</div>` : ''}</div>
+          <div class="hcell"><div class="hv">${h.bmi.toFixed(1)}</div><div class="hl">BMI</div></div>
+          <div class="hcell"><div class="hv">${h.bf.toFixed(1)}%</div><div class="hl">Body Fat</div></div>
+          <div class="hcell"><div class="hv">${h.waist.toFixed(1)}</div><div class="hl">รอบเอว</div></div>
+        </div>`;
+      listEl.appendChild(el);
+    });
+
+    if (state.bodyLogs.length >= 2) {
+      trend1.style.display = 'block';
+      trend2.style.display = 'block';
+      drawTrend('trendSvg1', state.bodyLogs.map(h => h.weight), state.bodyLogs.map(h => h.bf), '#FF5A1F', '#5B7DB1', true);
+      drawTrend('trendSvg2', state.bodyLogs.map(h => h.waist), null, '#F5B429', null, false);
+    } else {
+      trend1.style.display = 'none'; trend2.style.display = 'none';
+    }
+  }
+
+  function drawTrend(svgId, seriesA, seriesB, colorA, colorB, dashB) {
+    const svg = document.getElementById(svgId);
+    if (!svg) return;
+    const W = 300, H = 90, PAD = 8;
+    const n = seriesA.length;
+    const stepX = (W - PAD * 2) / (n - 1);
+    function pts(vals) {
+      const vMin = Math.min(...vals), vMax = Math.max(...vals), range = (vMax - vMin) || 1;
+      return vals.map((v, i) => `${PAD + stepX * i},${H - PAD - ((v - vMin) / range) * (H - PAD * 2)}`).join(' ');
+    }
+    function circles(vals, color) {
+      const vMin = Math.min(...vals), vMax = Math.max(...vals), range = (vMax - vMin) || 1;
+      return vals.map((v, i) => {
+        const x = PAD + stepX * i, y = H - PAD - ((v - vMin) / range) * (H - PAD * 2);
+        return `<circle cx="${x}" cy="${y}" r="2.4" fill="${color}"/>`;
+      }).join('');
+    }
+    let svgContent = `<polyline points="${pts(seriesA)}" fill="none" stroke="${colorA}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>${circles(seriesA, colorA)}`;
+    if (seriesB) {
+      svgContent += `<polyline points="${pts(seriesB)}" fill="none" stroke="${colorB}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" ${dashB ? 'stroke-dasharray="4,3"' : ''}/>${circles(seriesB, colorB)}`;
+    }
+    svg.innerHTML = svgContent;
+  }
+
+  // ---------- แท็บ "ความรู้" ----------
+  function renderKnow() {
+    const el = document.getElementById('v-know');
+    const latest = state.bodyLogs[state.bodyLogs.length - 1];
+    el.innerHTML = `
+      <h2 class="head">ค่าล่าสุดของคุณ</h2>
+      <div class="card">
+        ${latest ? `
+          <div class="metricrow"><span class="lab">BMI</span><span class="val">${latest.bmi.toFixed(1)} ${bmiTag(latest.bmi)}</span></div>
+          <div class="metricrow"><span class="lab">Body Fat %</span><span class="val">${latest.bf.toFixed(1)}% ${bfTag(latest.bf)}</span></div>
+          <div class="metricrow"><span class="lab">Lean Body Mass</span><span class="val">${latest.lbm.toFixed(1)} kg</span></div>
+          <div class="metricrow"><span class="lab">% Lean Mass</span><span class="val">${latest.leanPct.toFixed(1)}% ${leanTag(latest.leanPct)}</span></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px">อัปเดตล่าสุด: ${latest.date}</div>
+        ` : `<p style="text-align:center;color:var(--muted)">ยังไม่มีข้อมูล ไปกรอกที่แท็บ "ติดตาม" ก่อน</p>
+             <button class="btn primary block" data-act="goto-track">ไปที่แท็บติดตาม →</button>`}
+      </div>
+
+      <h2 class="head">เกณฑ์ของแต่ละค่า</h2>
+      <div class="card">
+        <h3>BMI</h3>
+        <div class="metricrow"><span class="lab">ต่ำกว่าเกณฑ์</span><span class="val">น้อยกว่า 18.5</span></div>
+        <div class="metricrow"><span class="lab">ปกติ ✅</span><span class="val">18.5–24.9</span></div>
+        <div class="metricrow"><span class="lab">น้ำหนักเกิน</span><span class="val">25.0–29.9</span></div>
+        <div class="metricrow"><span class="lab">อ้วน</span><span class="val">30 ขึ้นไป</span></div>
+      </div>
+      <div class="card">
+        <h3>Body Fat % (ผู้ชาย)</h3>
+        <div class="metricrow"><span class="lab">นักกีฬา</span><span class="val">2–5%</span></div>
+        <div class="metricrow"><span class="lab">ฟิต (เห็นซิกแพค) ✅</span><span class="val">10–17%</span></div>
+        <div class="metricrow"><span class="lab">ปกติทั่วไป</span><span class="val">18–24%</span></div>
+        <div class="metricrow"><span class="lab">เกินเกณฑ์</span><span class="val">25% ขึ้นไป</span></div>
+        <p style="margin-top:8px">เป้าหมายซิกแพคชัดคือ <b>10–13%</b></p>
+      </div>
+      <div class="card">
+        <h3>Lean Mass</h3>
+        <div class="metricrow"><span class="lab">ต่ำ</span><span class="val">น้อยกว่า 70%</span></div>
+        <div class="metricrow"><span class="lab">ดี ✅</span><span class="val">70–85%</span></div>
+        <div class="metricrow"><span class="lab">สูงมาก</span><span class="val">85% ขึ้นไป</span></div>
+      </div>
+
+      <h2 class="head">Heart Rate Zone 2</h2>
+      <div class="card">
+        <p>คาร์ดิโอทุกวันให้อยู่ที่ <b>60–70% ของอัตราการเต้นหัวใจสูงสุด</b> (MHR = 220 − อายุ) แล้วนำ MHR ไปคูณ 0.6 และ 0.7 จะได้ช่วง Zone 2 ของตัวเอง (กรอกอายุที่แท็บ "ตั้งค่า" ระบบจะคำนวณให้อัตโนมัติด้านล่าง)</p>
+        ${(() => {
+          const age = (state.settings.profile && state.settings.profile.age);
+          if (!age) return '';
+          const mhr = 220 - age;
+          return `<div class="metricrow"><span class="lab">MHR โดยประมาณของคุณ</span><span class="val">${mhr} bpm</span></div>
+                  <div class="metricrow"><span class="lab">Zone 2 ของคุณ</span><span class="val">${Math.round(mhr*0.6)}–${Math.round(mhr*0.7)} bpm</span></div>`;
+        })()}
+        <p><b>Talk Test:</b> พูดเป็นประโยคยาวได้โดยไม่หอบ = อยู่ Zone 2 ถูกต้อง</p>
+      </div>
+
+      <h2 class="head">งานวิจัยที่อ้างอิง</h2>
+      <div class="card">
+        <p><b>วิ่ง + หน้าท้องวันเดียวกัน:</b> RCT ปี 2023 พบว่ากลุ่มที่วิ่งพร้อมเล่นหน้าท้อง 4 วัน/สัปดาห์ 10 สัปดาห์ ไขมันรอบลำตัวลดมากกว่ากลุ่มวิ่งอย่างเดียว</p>
+        <p><b>หน้าท้องอย่างเดียวไม่พอ:</b> งานวิจัยปี 2011 พบว่าเล่นท่าหน้าท้องอย่างเดียวไม่ลดไขมันหรือรอบเอว ถ้าไม่มีการขาดดุลแคลอรี่ร่วมด้วย</p>
+        <p><b>ผลรบกวนจากคาร์ดิโอ:</b> Wilson et al. 2012 (meta-analysis 21 งานวิจัย) พบว่าคาร์ดิโอไม่เกิน 3 ครั้ง/สัปดาห์ ช่วยลดผลรบกวนต่อการสร้างกล้ามเนื้อ ซึ่งตรงกับตารางนี้</p>
+      </div>
+
+      <h2 class="head">ข้อควรระวังวัย 43</h2>
+      <div class="card">
+        <ul class="clean">
+          <li>วอร์มอัพ 5–8 นาที + ยืดเหยียด 5 นาที ทุกครั้ง ห้ามข้าม</li>
+          <li>นอน 7–8 ชม. ต่อคืน ช่วงฟื้นตัวคือช่วงที่กล้ามโต</li>
+          <li>เพิ่มน้ำหนักทีละขั้นเล็ก อย่าเร่ง</li>
+          <li>ปวดข้อ (ไม่ใช่ปวดกล้าม) ให้หยุดท่านั้นทันที</li>
+        </ul>
+      </div>`;
+  }
+
+  // ---------- แท็บ "ตั้งค่า" ----------
+  function renderSettings() {
+    const el = document.getElementById('v-settings');
+    const s = state.settings;
+    el.innerHTML = `
+      <h2 class="head">โปรแกรม</h2>
+      <div class="card">
+        <div class="togrow"><span class="lab">วันเริ่มโปรแกรม</span><input type="date" id="setStartDate" value="${s.startDate || ''}"></div>
+        <div class="togrow"><span class="lab">อายุ</span><input type="number" id="setAge" value="${(s.profile && s.profile.age) || ''}"></div>
+        <div class="togrow"><span class="lab">ส่วนสูง (ซม.)</span><input type="number" id="setHeight" value="${(s.profile && s.profile.height) || ''}"></div>
+      </div>
+
+      <h2 class="head">การพักระหว่างเซ็ต</h2>
+      <div class="card">
+        <div class="togrow"><span class="lab">วันเวท (วินาที)</span><input type="number" id="setRestLift" value="${s.restSecondsLift}"></div>
+        <div class="togrow"><span class="lab">วันหน้าท้อง (วินาที)</span><input type="number" id="setRestAbs" value="${s.restSecondsAbs}"></div>
+        <div class="togrow"><span class="lab">ขนาดแผ่นน้ำหนักที่เล็กที่สุด (กก.)</span><input type="number" step="0.25" id="setPlateStep" value="${s.plateStep}"></div>
+      </div>
+
+      <h2 class="head">สำรอง / นำเข้าข้อมูล</h2>
+      <div class="card">
+        <p>สำรองข้อมูลทั้งหมด (เช็คลิสต์ + ประวัติน้ำหนักที่ยก + ประวัติค่าร่างกาย) เป็นไฟล์ .json เก็บไว้ใน iCloud Drive</p>
+        <p style="font-size:11.5px;color:var(--muted)">สำรองล่าสุด: ${s.lastBackupAt ? new Date(s.lastBackupAt).toLocaleString('th-TH') : 'ยังไม่เคยสำรอง'}</p>
+        <div class="btnrow">
+          <button class="btn primary block" data-act="export">📤 ส่งออกไฟล์สำรอง</button>
+        </div>
+        <div class="btnrow">
+          <button class="btn ghost block" data-act="import-trigger">📥 นำเข้าไฟล์สำรอง</button>
+        </div>
+      </div>
+
+      <h2 class="head">นำเข้าจากแอปเวอร์ชันก่อน</h2>
+      <div class="card">
+        <p style="font-size:12.5px">วางโค้ดสำรองแบบเก่า (จากแอปที่ใช้ githack) ระบบจะตั้งวันเริ่มโปรแกรมให้ใกล้เคียงเดิม ส่วนประวัติค่าร่างกาย ให้กรอกใหม่ตามภาพที่ถ่ายไว้</p>
+        <textarea id="legacyCode" placeholder="วางโค้ดที่นี่" style="width:100%;min-height:60px;border:1px solid var(--line);border-radius:12px;padding:10px;font-family:'IBM Plex Mono';font-size:11px;margin-bottom:8px"></textarea>
+        <button class="btn ghost block" data-act="legacy-import">นำเข้าโค้ดเก่า</button>
+        <div id="legacyMsg" style="font-size:12px;margin-top:8px"></div>
+      </div>
+
+      <h2 class="head">ล้างข้อมูล</h2>
+      <div class="card">
+        <p>ลบข้อมูลทั้งหมดในเครื่องนี้ (แนะนำให้สำรองก่อนทุกครั้ง)</p>
+        <button class="btn dangerbtn block" data-act="clear-data">🗑 ล้างข้อมูลทั้งหมด</button>
+      </div>
+
+      <div class="foot">Fitness 12 Weeks · v${SCHEMA_VERSION}</div>`;
+  }
+
+  // ---------- นาฬิกาพัก (persist เพื่อรอดจากการปิดแอปกลางคัน) ----------
+  const TIMER_KEY = 'fitness:timer';
+  let timerInterval = null;
+
+  function loadTimerState() {
+    try { const raw = backend.getItem(TIMER_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+  }
+  function saveTimerState(ts) {
+    try { if (ts) backend.setItem(TIMER_KEY, JSON.stringify(ts)); else backend.removeItem(TIMER_KEY); } catch (e) {}
+  }
+
+  function beep() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = 880; g.gain.value = 0.15;
+      o.start(); o.stop(ctx.currentTime + 0.18);
+    } catch (e) { /* เบราว์เซอร์บางตัวต้องมี interaction ก่อน ปล่อยผ่านได้ */ }
+  }
+
+  function startRestTimer(seconds) {
+    const ts = startTimer(seconds);
+    saveTimerState(ts);
+    showTimerBar();
+  }
+
+  function showTimerBar() {
+    const bar = document.getElementById('timerBar');
+    bar.style.display = 'flex';
+    tickTimer();
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(tickTimer, 250);
+  }
+
+  function tickTimer() {
+    const ts = loadTimerState();
+    const bar = document.getElementById('timerBar');
+    if (!ts) { bar.style.display = 'none'; clearInterval(timerInterval); return; }
+    const remain = remainingSeconds(ts);
+    const mm = Math.floor(remain / 60), ss = remain % 60;
+    document.getElementById('timerText').textContent = `${mm}:${String(ss).padStart(2, '0')}`;
+    if (remain <= 0) {
+      beep();
+      saveTimerState(null);
+      clearInterval(timerInterval);
+      bar.style.display = 'none';
+    }
+  }
+
+  function extendRestTimer() {
+    const ts = loadTimerState();
+    if (!ts) return;
+    saveTimerState(extendTimer(ts, 15));
+  }
+
+  function skipRestTimer() {
+    saveTimerState(null);
+    document.getElementById('timerBar').style.display = 'none';
+    if (timerInterval) clearInterval(timerInterval);
+  }
+
+  // ---------- บันทึกเซ็ต / วิ่ง ----------
+  function handleRecordSet(exId, idx, dayKey, restSec) {
+    const kgInput = document.getElementById(`kg-${exId}-${idx}`);
+    const repsInput = document.getElementById(`reps-${exId}-${idx}`);
+    const kgVal = kgInput.value === '' ? null : kgInput.value;
+    const res = recordSet(state, todayKey(), dayKey, exId, idx, { kg: kgVal, reps: repsInput.value });
+    if (!res.ok) {
+      alert(res.error === 'INVALID_KG' ? 'น้ำหนักต้องเป็นตัวเลขไม่ติดลบ' : 'กรุณากรอกจำนวนครั้ง/วินาที ให้ถูกต้อง');
+      return;
+    }
+    save();
+    const plan = getTodayPlan(state.settings.startDate, todayKey());
+    if (isDayComplete(state, todayKey(), plan.exercises)) markCompleted(state, todayKey(), true);
+    save();
+    startRestTimer(Number(restSec));
+    renderToday();
+    renderTopbar();
+  }
+
+  function handleSaveRun() {
+    const plan = getTodayPlan(state.settings.startDate, todayKey());
+    const minutes = document.getElementById('runMinutes').value;
+    const avgHr = document.getElementById('runHr').value;
+    const res = recordRun(state, todayKey(), plan.dayKey, { minutes, avgHr });
+    if (!res.ok) { alert('กรุณากรอกจำนวนนาทีให้ถูกต้อง'); return; }
+    save();
+    renderToday();
+  }
+
+  // ---------- สำรอง/นำเข้าข้อมูล ----------
+  function doExport() {
+    const payload = buildBackupPayload(state);
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = backupFileName();
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+    state.settings.lastBackupAt = new Date().toISOString();
+    save();
+    renderBanner();
+    renderSettings();
+  }
+
+  function doImportFile(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const v = validateBackupPayload(reader.result);
+      if (!v.ok) {
+        alert('ไฟล์นี้ไม่ใช่ไฟล์สำรองของแอปนี้ หรือไฟล์เสียหาย (' + v.error + ')');
+        return;
+      }
+      const ok = confirm(`พบข้อมูล ${v.summary.sessionCount} วัน, ประวัติค่าร่างกาย ${v.summary.bodyLogCount} รายการ\nส่งออกเมื่อ: ${v.summary.exportedAt}\n\nนำเข้าและแทนที่ข้อมูลปัจจุบันหรือไม่?`);
+      if (!ok) return;
+      state = store.migrate(v.data);
+      save();
+      renderAll();
+      alert('นำเข้าข้อมูลสำเร็จ');
+    };
+    reader.onerror = () => alert('อ่านไฟล์ไม่สำเร็จ ลองใหม่อีกครั้ง');
+    reader.readAsText(file);
+  }
+
+  function doLegacyImport() {
+    const code = document.getElementById('legacyCode').value.trim();
+    const msg = document.getElementById('legacyMsg');
+    if (!code) { msg.textContent = 'กรุณาวางโค้ดก่อน'; msg.style.color = '#B23A3A'; return; }
+    const r = store.importLegacyChecklistCode(code);
+    if (!r.ok) { msg.textContent = '✕ โค้ดไม่ถูกต้อง'; msg.style.color = '#B23A3A'; return; }
+    // ประมาณวันเริ่มจากสัปดาห์เดิม เพื่อให้ตารางเดินต่อใกล้เคียงของเดิม
+    const approxStart = new Date();
+    approxStart.setDate(approxStart.getDate() - (Math.max(1, r.legacy.week) - 1) * 7);
+    state.settings.startDate = toDateKey(approxStart);
+    save();
+    msg.textContent = `✓ นำเข้าสำเร็จ ตั้งวันเริ่มประมาณสัปดาห์ที่ ${r.legacy.week} — กรุณากรอกประวัติค่าร่างกายใหม่ที่แท็บ "ติดตาม"`;
+    msg.style.color = 'var(--grow-dk)';
+    renderAll();
+  }
+
+  function doClearData() {
+    if (!confirm('ลบข้อมูลทั้งหมดในเครื่องนี้ถาวร ต้องการดำเนินการต่อหรือไม่? (แนะนำให้สำรองก่อน)')) return;
+    if (!confirm('ยืนยันอีกครั้ง: ข้อมูลทั้งหมดจะหายและกู้คืนไม่ได้ (นอกจากมีไฟล์สำรอง)')) return;
+    state = defaultState();
+    save();
+    saveTimerState(null);
+    renderAll();
+  }
+
+  // ---------- event delegation ----------
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-act]');
+    if (!t) return;
+    const act = t.dataset.act;
+    if (act === 'record-set') handleRecordSet(t.dataset.ex, Number(t.dataset.idx), t.dataset.day, t.dataset.restsec);
+    else if (act === 'save-run') handleSaveRun();
+    else if (act === 'calc') doCalc();
+    else if (act === 'save-bodylog') saveBodyLog();
+    else if (act === 'del-bodylog') deleteBodyLog(Number(t.dataset.ts));
+    else if (act === 'export') doExport();
+    else if (act === 'import-trigger') document.getElementById('importFileInput').click();
+    else if (act === 'legacy-import') doLegacyImport();
+    else if (act === 'clear-data') doClearData();
+    else if (act === 'goto-settings') document.querySelector('[data-v="v-settings"]').click();
+    else if (act === 'goto-track') document.querySelector('[data-v="v-track"]').click();
+    else if (t.id === 'timerPlus15') extendRestTimer();
+    else if (t.id === 'timerSkip') skipRestTimer();
+    else if (t.id === 'backupBannerBtn') doExport();
+  });
+  document.getElementById('timerPlus15').addEventListener('click', extendRestTimer);
+  document.getElementById('timerSkip').addEventListener('click', skipRestTimer);
+  document.getElementById('backupBannerBtn').addEventListener('click', doExport);
+
+  document.addEventListener('change', (e) => {
+    const id = e.target.id;
+    if (id === 'setStartDate') { state.settings.startDate = e.target.value; save(); renderAll(); }
+    else if (id === 'setAge') { state.settings.profile.age = parseFloat(e.target.value) || null; save(); }
+    else if (id === 'setHeight') { state.settings.profile.height = parseFloat(e.target.value) || null; save(); }
+    else if (id === 'setRestLift') { state.settings.restSecondsLift = Number(e.target.value) || 75; save(); }
+    else if (id === 'setRestAbs') { state.settings.restSecondsAbs = Number(e.target.value) || 45; save(); }
+    else if (id === 'setPlateStep') { state.settings.plateStep = Number(e.target.value) || 1.25; save(); }
+    else if (id === 'importFileInput') { if (e.target.files[0]) doImportFile(e.target.files[0]); e.target.value = ''; }
+  });
+
+  // ---------- init ----------
+  function renderAll() {
+    renderTopbar();
+    renderBanner();
+    renderToday();
+    renderProgram();
+    renderTrack();
+    renderKnow();
+    renderSettings();
+  }
+
+  if (!storageOK) {
+    console.warn('localStorage ใช้งานไม่ได้ในบริบทนี้ ข้อมูลจะไม่ถูกบันทึกถาวร (ใช้งานปกติเมื่อเปิดผ่าน Safari จริง)');
+  }
+
+  // ถ้ายังไม่เคยตั้งวันเริ่ม ให้ตั้งอัตโนมัติเป็นวันจันทร์ที่ใกล้ที่สุด (ผู้ใช้แก้ทีหลังได้ที่ตั้งค่า)
+  if (!state.settings.startDate) {
+    const d = new Date();
+    const day = d.getDay(); // 0=Sun
+    const diffToMon = day === 0 ? 1 : (day === 1 ? 0 : 8 - day);
+    d.setDate(d.getDate() + diffToMon);
+    state.settings.startDate = toDateKey(d);
+    save();
+  }
+
+  // resume นาฬิกาพักถ้าปิดแอปไปตอนกำลังนับ
+  const existingTimer = loadTimerState();
+  if (existingTimer && remainingSeconds(existingTimer) > 0) {
+    showTimerBar();
+  } else if (existingTimer) {
+    saveTimerState(null);
+  }
+
+  renderAll();
+})();
+
+</script>
+</body>
+</html>
